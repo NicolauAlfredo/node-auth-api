@@ -10,7 +10,10 @@ const {
 const { hashPassword, comparePassword } = require("../utils/hash");
 const { generateCode, generateExpirationDate } = require("../utils/code");
 const { generateToken } = require("../utils/token");
-const { sendVerificationCodeEmail } = require("../services/emailService");
+const {
+  sendVerificationCodeEmail,
+  sendAccountVerifiedEmail,
+} = require("../services/emailService");
 
 // Register new user
 const register = async (req, res, next) => {
@@ -123,6 +126,10 @@ const verifyEmail = async (req, res, next) => {
     }
 
     await verifyUser(user.id);
+
+    await sendAccountVerifiedEmail({
+      to: user.email,
+    });
 
     res.status(200).json({
       success: true,

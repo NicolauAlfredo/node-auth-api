@@ -15,6 +15,23 @@ const sendVerificationCodeEmail = async ({ to, code }) => {
   });
 };
 
+// Send account verified email
+const sendAccountVerifiedEmail = async ({ to }) => {
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: "Account verified successfully",
+    html: `
+      <h1>Account verified</h1>
+
+      <p>Your account has been successfully verified.</p>
+
+      <p>You can now log in to the application.</p>
+    `,
+  });
+};
+
 module.exports = {
   sendVerificationCodeEmail,
+  sendAccountVerifiedEmail,
 };
