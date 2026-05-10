@@ -2,6 +2,7 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const { connectDB } = require("./src/config/db");
 
 const app = express();
 
@@ -46,7 +47,13 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the Express server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Start application after database connection
+const startServer = async () => {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer();
