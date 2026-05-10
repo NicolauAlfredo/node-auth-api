@@ -1,0 +1,27 @@
+{
+  "name": "auth-api",
+  "version": "1.0.0",
+  "description": "Authentication API built with Node.js, Express, and MySQL using a local database for learning backend development.",
+  "keywords": [
+    "node",
+    "express",
+    "mysql",
+    "authentication",
+    "api"
+  ],
+  "homepage": "https://github.com/NicolauAlfredo/node-auth-api#readme",
+  "bugs": {
+    "url": "https://github.com/NicolauAlfredo/node-auth-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicolauAlfredo/node-auth-api.git"
+  },
+  "license": "ISC",
+  "author": "Nicolau Alfredo",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
