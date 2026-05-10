@@ -1,45 +1,28 @@
 const express = require("express");
 
+const {
+  register,
+  login,
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+} = require("../controllers/authController");
+
 const router = express.Router();
 
 // Register a new user
-router.post("/register", (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: "Register route not implemented yet",
-  });
-});
+router.post("/register", register);
 
 // Login user
-router.post("/login", (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: "Login route not implemented yet",
-  });
-});
+router.post("/login", login);
 
 // Verify user account
-router.post("/verify-email", (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: "Email verification route not implemented yet",
-  });
-});
+router.post("/verify-email", verifyEmail);
 
 // Request password reset code
-router.post("/forgot-password", (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: "Forgot password route not implemented yet",
-  });
-});
+router.post("/forgot-password", forgotPassword);
 
 // Reset user password
-router.post("/reset-password", (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: "Reset password route not implemented yet",
-  });
-});
+router.post("/reset-password", resetPassword);
 
 module.exports = router;
