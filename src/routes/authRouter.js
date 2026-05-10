@@ -1,6 +1,7 @@
 const express = require("express");
 
 const validator = require("../middlewares/validator");
+const checkUserExists = require("../middlewares/checkUserExists");
 
 const {
   registerSchema,
@@ -24,19 +25,30 @@ const router = express.Router();
 router.post("/register", validator(registerSchema), register);
 
 // Login user
-router.post("/login", validator(loginSchema), login);
+router.post("/login", validator(loginSchema), checkUserExists, login);
 
 // Verify user account
-router.post("/verify-email", validator(verifyEmailSchema), verifyEmail);
+router.post(
+  "/verify-email",
+  validator(verifyEmailSchema),
+  checkUserExists,
+  verifyEmail,
+);
 
 // Request password reset code
 router.post(
   "/forgot-password",
   validator(forgotPasswordSchema),
+  checkUserExists,
   forgotPassword,
 );
 
 // Reset user password
-router.post("/reset-password", validator(resetPasswordSchema), resetPassword);
+router.post(
+  "/reset-password",
+  validator(resetPasswordSchema),
+  checkUserExists,
+  resetPassword,
+);
 
 module.exports = router;

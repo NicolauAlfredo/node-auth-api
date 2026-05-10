@@ -1,6 +1,3 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-
 const {
   createUser,
   findUserByEmail,
@@ -9,10 +6,9 @@ const {
   updatePassword,
 } = require("../models/userModel");
 
-// Generate 6-digit verification code
-const generateCode = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-};
+const { hashPassword, comparePassword } = require("../utils/hash");
+const { generateCode, generateExpirationDate } = require("../utils/code");
+const { generateToken } = require("../utils/token");
 
 // Register new user
 const register = async (req, res, next) => {
@@ -28,11 +24,10 @@ const register = async (req, res, next) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
 
     const verificationCode = generateCode();
-
-    const verificationCodeExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    const verificationCodeExpiresAt = generateExpirationDate(10);
 
     const userId = await createUser({
       email,
@@ -47,7 +42,7 @@ const register = async (req, res, next) => {
       data: {
         userId,
         email,
-        verificationCode, 
+        verificationCode,
       },
     });
   } catch (error) {
@@ -58,18 +53,10 @@ const register = async (req, res, next) => {
 // Login user
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const user = req.user;
 
-    const user = await findUserByEmail(email);
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await comparePassword(password, user.password);
 
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -85,16 +72,10 @@ const login = async (req, res, next) => {
       });
     }
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1d",
-      },
-    );
+    const token = generateToken({
+      id: user.id,
+      email: user.email,
+    });
 
     res.status(200).json({
       success: true,
@@ -109,16 +90,8 @@ const login = async (req, res, next) => {
 // Verify user email
 const verifyEmail = async (req, res, next) => {
   try {
-    const { email, verificationCode } = req.body;
-
-    const user = await findUserByEmail(email);
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+    const { verificationCode } = req.body;
+    const user = req.user;
 
     if (user.verified) {
       return res.status(400).json({
@@ -157,18 +130,8 @@ const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    const user = await findUserByEmail(email);
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
     const forgotPasswordCode = generateCode();
-
-    const forgotPasswordCodeExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    const forgotPasswordCodeExpiresAt = generateExpirationDate(10);
 
     await saveForgotPasswordCode({
       email,
@@ -179,7 +142,7 @@ const forgotPassword = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Password reset code generated successfully",
-      forgotPasswordCode, // temporary: later this should be sent by email
+      forgotPasswordCode,
     });
   } catch (error) {
     next(error);
@@ -190,15 +153,7 @@ const forgotPassword = async (req, res, next) => {
 const resetPassword = async (req, res, next) => {
   try {
     const { email, forgotPasswordCode, newPassword } = req.body;
-
-    const user = await findUserByEmail(email);
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+    const user = req.user;
 
     if (user.forgot_password_code !== forgotPasswordCode) {
       return res.status(400).json({
@@ -214,7 +169,7 @@ const resetPassword = async (req, res, next) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await hashPassword(newPassword);
 
     await updatePassword({
       email,
