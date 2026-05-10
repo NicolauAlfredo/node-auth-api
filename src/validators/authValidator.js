@@ -1,18 +1,15 @@
 const Joi = require("joi");
 
+const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 // Register validation schema
 const registerSchema = Joi.object({
-  email: Joi.string()
-    .min(6)
-    .max(60)
-    .required()
-    .email({ tlds: { allow: ["com", "net"] } }),
+  email: Joi.string().email().required(),
 
-  password: Joi.string()
-    .min(6)
-    .max(50)
-    .required()
-    .pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*d)-{8,}$")),
+  password: Joi.string().pattern(passwordPattern).required().messages({
+    "string.pattern.base":
+      "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number",
+  }),
 });
 
 // Login validation schema
@@ -40,7 +37,10 @@ const resetPasswordSchema = Joi.object({
 
   forgotPasswordCode: Joi.string().length(6).required(),
 
-  newPassword: Joi.string().min(6).max(50).required(),
+  newPassword: Joi.string().pattern(passwordPattern).required().messages({
+    "string.pattern.base":
+      "New password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number",
+  }),
 });
 
 module.exports = {
