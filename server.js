@@ -1,1 +1,52 @@
-console.log("Hello")
+const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
+const app = express();
+
+// Define application port
+const PORT = process.env.PORT || 8000;
+
+// Enable CORS for frontend communication
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
+// Add security HTTP headers
+app.use(helmet());
+
+// Parse cookies from incoming requests
+app.use(cookieParser());
+
+// Parse incoming JSON payloads
+app.use(express.json());
+
+// Parse URL-encoded form data
+app.use(express.urlencoded({ extended: true }));
+
+// Base route to test server status
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "API is running",
+  });
+});
+
+// Global error handler middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+
+  res.status(500).json({
+    success: false,
+    message: "Internal Server Error",
+  });
+});
+
+// Start the Express server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
