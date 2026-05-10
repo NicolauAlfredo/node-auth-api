@@ -10,6 +10,7 @@ const {
 const { hashPassword, comparePassword } = require("../utils/hash");
 const { generateCode, generateExpirationDate } = require("../utils/code");
 const { generateToken } = require("../utils/token");
+const { sendVerificationCodeEmail } = require("../services/emailService");
 
 // Register new user
 const register = async (req, res, next) => {
@@ -37,12 +38,18 @@ const register = async (req, res, next) => {
       verificationCodeExpiresAt,
     });
 
+    await sendVerificationCodeEmail({
+      to: email,
+      code: verificationCode,
+    });
+
     res.status(201).json({
       success: true,
       message: "User registered successfully",
       data: {
         userId,
         email,
+        // Development only: remove in production
         verificationCode,
       },
     });
@@ -204,8 +211,14 @@ const resendVerificationCode = async (req, res, next) => {
 
     await updateVerificationCode({
       email,
+      // Development only: remove in production
       verificationCode,
       verificationCodeExpiresAt,
+    });
+
+    await sendVerificationCodeEmail({
+      to: email,
+      code: verificationCode,
     });
 
     res.status(200).json({
