@@ -2,7 +2,9 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+
 const { connectDB } = require("./src/config/db");
+const authRouter = require("./src/routes/authRouter");
 
 const app = express();
 
@@ -29,6 +31,9 @@ app.use(express.json());
 // Parse URL-encoded form data
 app.use(express.urlencoded({ extended: true }));
 
+// Authentication routes
+app.use("/api/auth", authRouter);
+
 // Base route to test server status
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -49,11 +54,18 @@ app.use((err, req, res, next) => {
 
 // Start application after database connection
 const startServer = async () => {
-  await connectDB();
+  try {
+    // Connect to MySQL database
+    await connectDB();
 
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+    // Start Express server
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server");
+    console.error(error.message);
+  }
 };
 
 startServer();
