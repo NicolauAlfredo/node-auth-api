@@ -1,0 +1,18 @@
+use node_auth_api;
+
+CREATE TABLE posts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+
+  user_id INT NOT NULL,
+
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  CONSTRAINT fk_posts_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE
+);

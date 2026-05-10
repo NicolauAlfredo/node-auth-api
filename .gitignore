@@ -52,9 +52,10 @@ Thumbs.db
 *.sqlite3
 *.db
 
-# MySQL local dumps/backups
-*.sql
+# MySQL local dumps/backups 
 *.dump
+backup*.sql
+*_backup.sql
 
 # Node package lock alternatives
 yarn.lock
