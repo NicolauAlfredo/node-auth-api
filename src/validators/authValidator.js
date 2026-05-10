@@ -12,7 +12,7 @@ const registerSchema = Joi.object({
     .min(6)
     .max(50)
     .required()
-    .pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?.*d)-{8,}$")),
+    .pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*d)-{8,}$")),
 });
 
 // Login validation schema
