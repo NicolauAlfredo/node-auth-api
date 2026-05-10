@@ -4,6 +4,7 @@ const {
   verifyUser,
   saveForgotPasswordCode,
   updatePassword,
+  updateVerificationCode,
 } = require("../models/userModel");
 
 const { hashPassword, comparePassword } = require("../utils/hash");
@@ -185,10 +186,43 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
+// Resend verification code
+const resendVerificationCode = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = req.user;
+
+    if (user.verified) {
+      return res.status(400).json({
+        success: false,
+        message: "User is already verified",
+      });
+    }
+
+    const verificationCode = generateCode();
+    const verificationCodeExpiresAt = generateExpirationDate(10);
+
+    await updateVerificationCode({
+      email,
+      verificationCode,
+      verificationCodeExpiresAt,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Verification code resent successfully",
+      verificationCode, // temporary: later this should be sent by email
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
   verifyEmail,
   forgotPassword,
   resetPassword,
+  resendVerificationCode,
 };

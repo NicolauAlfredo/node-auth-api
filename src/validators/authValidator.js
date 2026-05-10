@@ -43,10 +43,16 @@ const resetPasswordSchema = Joi.object({
   }),
 });
 
+// Resend verification code validation schema
+const resendVerificationCodeSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
   verifyEmailSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  resendVerificationCodeSchema,
 };

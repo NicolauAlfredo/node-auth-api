@@ -9,6 +9,7 @@ const {
   verifyEmailSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  resendVerificationCodeSchema,
 } = require("../validators/authValidator");
 
 const {
@@ -17,6 +18,7 @@ const {
   verifyEmail,
   forgotPassword,
   resetPassword,
+  resendVerificationCode,
 } = require("../controllers/authController");
 
 const router = express.Router();
@@ -49,6 +51,14 @@ router.post(
   validator(resetPasswordSchema),
   checkUserExists,
   resetPassword,
+);
+
+// Resend verification code
+router.post(
+  "/resend-verification-code",
+  validator(resendVerificationCodeSchema),
+  checkUserExists,
+  resendVerificationCode,
 );
 
 module.exports = router;

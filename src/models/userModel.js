@@ -107,6 +107,26 @@ const updatePassword = async ({ email, password }) => {
   return result.affectedRows;
 };
 
+// Update user verification code
+const updateVerificationCode = async ({
+  email,
+  verificationCode,
+  verificationCodeExpiresAt,
+}) => {
+  const [result] = await pool.query(
+    `
+    UPDATE users
+    SET
+      verification_code = ?,
+      verification_code_expires_at = ?
+    WHERE email = ?
+    `,
+    [verificationCode, verificationCodeExpiresAt, email],
+  );
+
+  return result.affectedRows;
+};
+
 module.exports = {
   createUser,
   findUserByEmail,
@@ -114,4 +134,5 @@ module.exports = {
   verifyUser,
   saveForgotPasswordCode,
   updatePassword,
+  updateVerificationCode,
 };
