@@ -25,8 +25,77 @@ const {
 
 const router = express.Router();
 
+// Docs
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags:
+ *       - Authentication
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *
+ *               password:
+ *                 type: string
+ *                 example: Password123
+ *
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *
+ *       409:
+ *         description: Email already registered
+ */
+
 // Register a new user
 router.post("/register", validator(registerSchema), register);
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags:
+ *       - Authentication
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *
+ *               password:
+ *                 type: string
+ *                 example: Password123
+ *
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *
+ *       401:
+ *         description: Invalid credentials
+ */
 
 // Login user
 router.post(
