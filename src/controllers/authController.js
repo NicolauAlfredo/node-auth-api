@@ -1,5 +1,3 @@
-const AppError = require("../errors/AppError");
-
 const {
   createUser,
   findUserByEmail,
