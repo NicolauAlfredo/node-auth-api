@@ -5,11 +5,7 @@ const validator = (schema) => {
     });
 
     if (error) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        errors: error.details.map((detail) => detail.message),
-      });
+      throw new AppError("Validation failed", 400);
     }
 
     next();

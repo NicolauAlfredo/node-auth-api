@@ -53,10 +53,7 @@ const getPostByIdController = async (req, res, next) => {
     const post = await findPostById(id);
 
     if (!post) {
-      return res.status(404).json({
-        success: false,
-        message: "Post not found",
-      });
+      throw new AppError("Post not found", 404);
     }
 
     res.status(200).json({

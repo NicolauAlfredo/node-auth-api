@@ -14,6 +14,7 @@ const {
   sendVerificationCodeEmail,
   sendAccountVerifiedEmail,
 } = require("../services/emailService");
+const AppError = require("../errors/AppError");
 
 // Register new user
 const register = async (req, res, next) => {
@@ -23,10 +24,7 @@ const register = async (req, res, next) => {
     const existingUser = await findUserByEmail(email);
 
     if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: "Email already registered",
-      });
+      throw new AppError("Email already registered", 409);
     }
 
     const hashedPassword = await hashPassword(password);
@@ -70,17 +68,11 @@ const login = async (req, res, next) => {
     const isPasswordValid = await comparePassword(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
+      throw new AppError("Invalid email or password", 401);
     }
 
     if (!user.verified) {
-      return res.status(403).json({
-        success: false,
-        message: "Please verify your account before logging in",
-      });
+      throw new AppError("Please verify your account before logging in", 403);
     }
 
     const token = generateToken({
@@ -105,24 +97,15 @@ const verifyEmail = async (req, res, next) => {
     const user = req.user;
 
     if (user.verified) {
-      return res.status(400).json({
-        success: false,
-        message: "User already verified",
-      });
+      throw new AppError("User already verified", 400);
     }
 
     if (user.verification_code !== verificationCode) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid verification code",
-      });
+      throw new AppError("Invalid verification code", 400);
     }
 
     if (new Date() > new Date(user.verification_code_expires_at)) {
-      return res.status(400).json({
-        success: false,
-        message: "Verification code has expired",
-      });
+      throw new AppError("Verification code has expired", 400);
     }
 
     await verifyUser(user.id);
@@ -171,17 +154,11 @@ const resetPassword = async (req, res, next) => {
     const user = req.user;
 
     if (user.forgot_password_code !== forgotPasswordCode) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid password reset code",
-      });
+      throw new AppError("Invalid password reset code", 400);
     }
 
     if (new Date() > new Date(user.forgot_password_code_expires_at)) {
-      return res.status(400).json({
-        success: false,
-        message: "Password reset code has expired",
-      });
+      throw new AppError("Password reset code has expired", 400);
     }
 
     const hashedPassword = await hashPassword(newPassword);
@@ -207,10 +184,7 @@ const resendVerificationCode = async (req, res, next) => {
     const user = req.user;
 
     if (user.verified) {
-      return res.status(400).json({
-        success: false,
-        message: "User is already verified",
-      });
+      throw new AppError("User is already verified", 400);
     }
 
     const verificationCode = generateCode();
