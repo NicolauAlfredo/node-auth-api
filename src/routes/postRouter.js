@@ -1,6 +1,12 @@
 const express = require("express");
 
 const authMiddleware = require("../middlewares/authMiddleware");
+const validator = require("../middlewares/validator");
+
+const {
+  createPostSchema,
+  updatePostSchema,
+} = require("../validators/postValidator");
 
 const {
   createPostController,
@@ -14,7 +20,12 @@ const {
 const router = express.Router();
 
 // Create post - protected
-router.post("/", authMiddleware, createPostController);
+router.post(
+  "/",
+  authMiddleware,
+  validator(createPostSchema),
+  createPostController,
+);
 
 // Get all posts - public
 router.get("/", getAllPostsController);
@@ -26,7 +37,12 @@ router.get("/me", authMiddleware, getMyPostsControler);
 router.get("/:id", getPostByIdController);
 
 // Update post - protected
-router.put("/:id", authMiddleware, updatePostController);
+router.put(
+  "/:id",
+  authMiddleware,
+  validator(updatePostSchema),
+  updatePostController,
+);
 
 // Delete post - protected
 router.delete("/:id", authMiddleware, deletePostController);
