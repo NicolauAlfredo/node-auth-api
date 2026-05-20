@@ -1,13 +1,11 @@
-const NotFoundError = require("../errors/NotFoundError");
-
 const {
-  createPost,
-  findAllPosts,
-  findPostById,
-  findPostsByUserId,
-  updatePost,
-  deletePost,
-} = require("../models/postModel");
+  createPostService,
+  getAllPostsService,
+  getPostByIdService,
+  getPostsByUserIdService,
+  updatePostService,
+  deletePostService,
+} = require("../services/postService");
 
 // Create a new post
 const createPostController = async (req, res, next) => {
@@ -15,7 +13,7 @@ const createPostController = async (req, res, next) => {
     const { title, description } = req.body;
     const userId = req.user.id;
 
-    const postId = await createPost({
+    const post = await createPostService({
       title,
       description,
       userId,
@@ -24,9 +22,7 @@ const createPostController = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Post created successfully",
-      data: {
-        postId,
-      },
+      data: post,
     });
   } catch (error) {
     next(error);
@@ -36,7 +32,7 @@ const createPostController = async (req, res, next) => {
 // Get all posts
 const getAllPostsController = async (req, res, next) => {
   try {
-    const posts = await findAllPosts();
+    const posts = await getAllPostsService();
 
     res.status(200).json({
       success: true,
@@ -52,11 +48,7 @@ const getPostByIdController = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const post = await findPostById(id);
-
-    if (!post) {
-      throw new NotFoundError("Post not found");
-    }
+    const post = await getPostByIdService(id);
 
     res.status(200).json({
       success: true,
@@ -72,7 +64,7 @@ const getMyPostsController = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    const posts = await findPostsByUserId(userId);
+    const posts = await getPostsByUserIdService(userId);
 
     res.status(200).json({
       success: true,
@@ -89,7 +81,7 @@ const updatePostController = async (req, res, next) => {
     const { id } = req.params;
     const { title, description } = req.body;
 
-    await updatePost({
+    await updatePostService({
       id,
       title,
       description,
@@ -109,7 +101,7 @@ const deletePostController = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    await deletePost(id);
+    await deletePostService(id);
 
     res.status(200).json({
       success: true,
