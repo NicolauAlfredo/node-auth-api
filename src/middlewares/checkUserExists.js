@@ -1,6 +1,6 @@
 const { findUserByEmail } = require("../models/userModel");
 
-const AppError = require("../errors/AppError");
+const NotFoundError = require("../errors/NotFoundError");
 
 // Check if user exists by email
 const checkUserExists = async (req, res, next) => {
@@ -10,7 +10,7 @@ const checkUserExists = async (req, res, next) => {
     const user = await findUserByEmail(email);
 
     if (!user) {
-      throw new AppError("User not found", 404);
+      throw new NotFoundError("User not found");
     }
 
     req.user = user;

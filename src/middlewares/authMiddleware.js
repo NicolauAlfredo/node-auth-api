@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
 const { findUserById } = require("../models/userModel");
 
-const AppError = require("../errors/AppError");
+const UnauthorizedError = require("../errors/UnauthorizedError");
 
 const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw new AppError("Authentication token is required", 401);
+      throw new UnauthorizedError("Authentication token is required");
     }
 
     const token = authHeader.split(" ")[1];
@@ -18,14 +18,14 @@ const authMiddleware = async (req, res, next) => {
     const user = await findUserById(decoded.id);
 
     if (!user) {
-      throw new AppError("Invalid authentication token", 401);
+      throw new UnauthorizedError("Invalid authentication token");
     }
 
     req.user = user;
 
     next();
   } catch (error) {
-    throw new AppError("Invalid or expired token", 401);
+    throw new UnauthorizedError("Invalid or expired token");
   }
 };
 

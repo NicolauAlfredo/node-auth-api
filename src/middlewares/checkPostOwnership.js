@@ -1,6 +1,7 @@
 const { findPostById } = require("../models/postModel");
 
-const AppError = require("../errors/AppError");
+const NotFoundError = require("../errors/NotFoundError");
+const ForbiddenError = require("../errors/ForbiddenError");
 
 // Check if authenticated user owns the post
 const checkPostOwnership = async (req, res, next) => {
@@ -11,11 +12,11 @@ const checkPostOwnership = async (req, res, next) => {
     const post = await findPostById(id);
 
     if (!post) {
-      throw new AppError("Post not found", 404);
+      throw new NotFoundError("Post not found");
     }
 
     if (post.userId !== userId) {
-      throw new AppError("You are not allowed to modify this post", 403);
+      throw new ForbiddenError("You are not allowed to modify this post");
     }
 
     res.post = post;

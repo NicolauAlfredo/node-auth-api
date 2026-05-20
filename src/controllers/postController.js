@@ -1,4 +1,4 @@
-const AppError = require("../errors/AppError");
+const NotFoundError = require("../errors/NotFoundError");
 
 const {
   createPost,
@@ -55,7 +55,7 @@ const getPostByIdController = async (req, res, next) => {
     const post = await findPostById(id);
 
     if (!post) {
-      throw new AppError("Post not found", 404);
+      throw new NotFoundError("Post not found");
     }
 
     res.status(200).json({

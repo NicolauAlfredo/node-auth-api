@@ -1,3 +1,16 @@
+const { hashPassword, comparePassword } = require("../utils/hash");
+const { generateCode, generateExpirationDate } = require("../utils/code");
+const { generateToken } = require("../utils/token");
+const {
+  sendVerificationCodeEmail,
+  sendAccountVerifiedEmail,
+} = require("../services/emailService");
+
+const BadRequestError = require("../errors/BadRequestError");
+const UnauthorizedError = require("../errors/UnauthorizedError");
+const ForbiddenError = require("../errors/ForbiddenError");
+const ConflictError = require("../errors/ConflictError");
+
 const {
   createUser,
   findUserByEmail,
@@ -7,15 +20,6 @@ const {
   updateVerificationCode,
 } = require("../models/userModel");
 
-const { hashPassword, comparePassword } = require("../utils/hash");
-const { generateCode, generateExpirationDate } = require("../utils/code");
-const { generateToken } = require("../utils/token");
-const {
-  sendVerificationCodeEmail,
-  sendAccountVerifiedEmail,
-} = require("../services/emailService");
-const AppError = require("../errors/AppError");
-
 // Register new user
 const register = async (req, res, next) => {
   try {
@@ -24,7 +28,7 @@ const register = async (req, res, next) => {
     const existingUser = await findUserByEmail(email);
 
     if (existingUser) {
-      throw new AppError("Email already registered", 409);
+      throw new ConflictError("Email already registered");
     }
 
     const hashedPassword = await hashPassword(password);
@@ -68,11 +72,11 @@ const login = async (req, res, next) => {
     const isPasswordValid = await comparePassword(password, user.password);
 
     if (!isPasswordValid) {
-      throw new AppError("Invalid email or password", 401);
+      throw new UnauthorizedError("Invalid email or password");
     }
 
     if (!user.verified) {
-      throw new AppError("Please verify your account before logging in", 403);
+      throw new ForbiddenError("Please verify your account before logging in");
     }
 
     const token = generateToken({
@@ -97,15 +101,15 @@ const verifyEmail = async (req, res, next) => {
     const user = req.user;
 
     if (user.verified) {
-      throw new AppError("User already verified", 400);
+      throw new BadRequestError("User already verified");
     }
 
     if (user.verification_code !== verificationCode) {
-      throw new AppError("Invalid verification code", 400);
+      throw new BadRequestError("Invalid verification code");
     }
 
     if (new Date() > new Date(user.verification_code_expires_at)) {
-      throw new AppError("Verification code has expired", 400);
+      throw new BadRequestError("Verification code has expired");
     }
 
     await verifyUser(user.id);
@@ -154,11 +158,11 @@ const resetPassword = async (req, res, next) => {
     const user = req.user;
 
     if (user.forgot_password_code !== forgotPasswordCode) {
-      throw new AppError("Invalid password reset code", 400);
+      throw new BadRequestError("Invalid password reset code");
     }
 
     if (new Date() > new Date(user.forgot_password_code_expires_at)) {
-      throw new AppError("Password reset code has expired", 400);
+      throw new BadRequestError("Password reset code has expired");
     }
 
     const hashedPassword = await hashPassword(newPassword);
@@ -184,7 +188,7 @@ const resendVerificationCode = async (req, res, next) => {
     const user = req.user;
 
     if (user.verified) {
-      throw new AppError("User is already verified", 400);
+      throw new BadRequestError("User is already verified");
     }
 
     const verificationCode = generateCode();

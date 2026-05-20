@@ -1,4 +1,4 @@
-const AppError = require("../errors/AppError");
+const BadRequestError = require("../errors/BadRequestError");
 
 const validator = (schema) => {
   return (req, res, next) => {
@@ -7,7 +7,7 @@ const validator = (schema) => {
     });
 
     if (error) {
-      throw new AppError("Validation failed", 400);
+      throw new BadRequestError("Validation failed");
     }
 
     next();
