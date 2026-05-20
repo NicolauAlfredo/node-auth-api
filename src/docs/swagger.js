@@ -19,6 +19,12 @@ const swaggerOptions = {
       },
     ],
 
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+
     components: {
       securitySchemes: {
         bearerAuth: {
