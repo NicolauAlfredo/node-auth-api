@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const Joi = require("joi");
 
 const envSchema = Joi.object({

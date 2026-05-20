@@ -1,70 +1,9 @@
-require("./src/config/env");
-
-const express = require("express");
-const helmet = require("helmet");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
+const app = require("./src/app");
 
 const { connectDB } = require("./src/config/db");
-const authRouter = require("./src/routes/authRouter");
-const postRouter = require("./src/routes/postRouter");
-const errorHandler = require("./src/middlewares/errorHandler");
-const userRouter = require("./src/routes/userRouter");
-const { globalLimiter } = require("./src/middlewares/rateLimiter");
-
-const swaggerUi = require("swagger-ui-express");
-const swaggerSpec = require("./src/docs/swagger");
-
-const app = express();
-
-// Limiter
-app.use(globalLimiter);
 
 // Define application port
 const PORT = process.env.PORT || 8000;
-
-// Enable CORS for frontend communication
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  }),
-);
-
-// Add security HTTP headers
-app.use(helmet());
-
-// Parse cookies from incoming requests
-app.use(cookieParser());
-
-// Parse incoming JSON payloads
-app.use(express.json());
-
-// Parse URL-encoded form data
-app.use(express.urlencoded({ extended: true }));
-
-// Docs
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// Authentication routes
-app.use("/api/auth", authRouter);
-
-// Post routes
-app.use("/api/posts", postRouter);
-
-// User routes
-app.use("/api/users", userRouter);
-
-// Base route to test server status
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "API is running",
-  });
-});
-
-// Global error handler middleware
-app.use(errorHandler);
 
 // Start application after database connection
 const startServer = async () => {
