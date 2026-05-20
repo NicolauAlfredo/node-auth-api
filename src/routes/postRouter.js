@@ -81,16 +81,119 @@ router.post(
 // Get all posts - public
 router.get("/", getAllPostsController);
 
+/**
+ * @swagger
+ * /api/posts/me:
+ *   get:
+ *     summary: Get authenticated user's posts
+ *     tags:
+ *       - Posts
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     responses:
+ *       200:
+ *         description: Authenticated user's posts retrieved successfully
+ *
+ *       401:
+ *         description: Unauthorized
+ */
+
 // Get authenticated user's posts - protected
 router.get("/me", authMiddleware, getMyPostsController);
 
 /**
  * @swagger
- * /api/posts/{id}:
+ * /api/posts/me:
  *   get:
- *     summary: Get post by ID
+ *     summary: Get authenticated user's posts
  *     tags:
  *       - Posts
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     responses:
+ *       200:
+ *         description: Authenticated user's posts retrieved successfully
+ *
+ *       401:
+ *         description: Unauthorized
+ */
+
+// Get post by id - public
+router.get("/:id", getPostByIdController);
+
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   put:
+ *     summary: Update authenticated user's post
+ *     tags:
+ *       - Posts
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - description
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Updated post title
+ *
+ *               description:
+ *                 type: string
+ *                 example: This post description was updated through the API.
+ *
+ *     responses:
+ *       200:
+ *         description: Post updated successfully
+ *
+ *       401:
+ *         description: Unauthorized
+ *
+ *       403:
+ *         description: Forbidden
+ *
+ *       404:
+ *         description: Post not found
+ */
+
+// Update post - protected
+router.put(
+  "/:id",
+  authMiddleware,
+  checkPostOwnership,
+  validator(updatePostSchema),
+  updatePostController,
+);
+
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   delete:
+ *     summary: Delete authenticated user's post
+ *     tags:
+ *       - Posts
+ *
+ *     security:
+ *       - bearerAuth: []
  *
  *     parameters:
  *       - in: path
@@ -101,23 +204,17 @@ router.get("/me", authMiddleware, getMyPostsController);
  *
  *     responses:
  *       200:
- *         description: Post found
+ *         description: Post deleted successfully
+ *
+ *       401:
+ *         description: Unauthorized
+ *
+ *       403:
+ *         description: Forbidden
  *
  *       404:
  *         description: Post not found
  */
-
-// Get post by id - public
-router.get("/:id", getPostByIdController);
-
-// Update post - protected
-router.put(
-  "/:id",
-  authMiddleware,
-  checkPostOwnership,
-  validator(updatePostSchema),
-  updatePostController,
-);
 
 // Delete post - protected
 router.delete("/:id", authMiddleware, checkPostOwnership, deletePostController);
