@@ -20,6 +20,7 @@ const {
   updatePassword,
   updateVerificationCode,
 } = require("../models/userModel");
+const e = require("express");
 
 // Register new user
 const register = async (req, res, next) => {
@@ -216,6 +217,20 @@ const resendVerificationCode = async (req, res, next) => {
   }
 };
 
+// Logout
+const logout = async (req, res, next) => {
+  try {
+    res.clearCookie("token");
+
+    res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -223,4 +238,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   resendVerificationCode,
+  logout,
 };

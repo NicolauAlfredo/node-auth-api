@@ -19,6 +19,7 @@ const {
   forgotPassword,
   resetPassword,
   resendVerificationCode,
+  logout,
 } = require("../controllers/authController");
 
 const router = express.Router();
@@ -60,5 +61,8 @@ router.post(
   checkUserExists,
   resendVerificationCode,
 );
+
+// Logout
+router.post("/logout", logout);
 
 module.exports = router;
