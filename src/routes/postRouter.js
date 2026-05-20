@@ -105,21 +105,25 @@ router.get("/me", authMiddleware, getMyPostsController);
 
 /**
  * @swagger
- * /api/posts/me:
+ * /api/posts/{id}:
  *   get:
- *     summary: Get authenticated user's posts
+ *     summary: Get post by ID
  *     tags:
  *       - Posts
  *
- *     security:
- *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
  *
  *     responses:
  *       200:
- *         description: Authenticated user's posts retrieved successfully
+ *         description: Post retrieved successfully
  *
- *       401:
- *         description: Unauthorized
+ *       404:
+ *         description: Post not found
  */
 
 // Get post by id - public
