@@ -10,6 +10,7 @@ const BadRequestError = require("../errors/BadRequestError");
 const UnauthorizedError = require("../errors/UnauthorizedError");
 const ForbiddenError = require("../errors/ForbiddenError");
 const ConflictError = require("../errors/ConflictError");
+const { getAuthCookieOptions } = require("../utils/cookieOptions");
 
 const {
   createUser,
@@ -84,11 +85,10 @@ const login = async (req, res, next) => {
       email: user.email,
     });
 
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      token,
-    });
+    res
+      .cookie("token", token, getAuthCookieOptions())
+      .status(200)
+      .json({ success: true, message: "Login successful" });
   } catch (error) {
     next(error);
   }
