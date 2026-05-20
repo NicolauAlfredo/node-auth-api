@@ -1,3 +1,5 @@
+const AppError = require("../errors/AppError");
+
 const {
   createPost,
   findAllPosts,
