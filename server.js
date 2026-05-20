@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 
 const { connectDB } = require("./src/config/db");
 const authRouter = require("./src/routes/authRouter");
+const postRouter = require("./src/routes/postRouter");
 
 const app = express();
 
@@ -33,6 +34,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Authentication routes
 app.use("/api/auth", authRouter);
+
+// Post routes
+app.use("/api/posts", postRouter);
 
 // Base route to test server status
 app.get("/", (req, res) => {
