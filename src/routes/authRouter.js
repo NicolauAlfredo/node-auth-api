@@ -106,6 +106,40 @@ router.post(
   login,
 );
 
+/**
+ * @swagger
+ * /api/auth/verify-email:
+ *   post:
+ *     summary: Verify user email
+ *     tags:
+ *       - Authentication
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - verificationCode
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               verificationCode:
+ *                 type: string
+ *                 example: "123456"
+ *
+ *     responses:
+ *       200:
+ *         description: Account verified successfully
+ *       400:
+ *         description: Invalid, expired, or already used verification code
+ *       404:
+ *         description: User not found
+ */
+
 // Verify user account
 router.post(
   "/verify-email",
@@ -113,6 +147,36 @@ router.post(
   checkUserExists,
   verifyEmail,
 );
+
+/**
+ * @swagger
+ * /api/auth/forgot-password:
+ *   post:
+ *     summary: Generate password reset code
+ *     tags:
+ *       - Authentication
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *
+ *     responses:
+ *       200:
+ *         description: Password reset code generated successfully
+ *       404:
+ *         description: User not found
+ *       429:
+ *         description: Too many authentication attempts
+ */
 
 // Request password reset code
 router.post(
@@ -123,6 +187,46 @@ router.post(
   forgotPassword,
 );
 
+/**
+ * @swagger
+ * /api/auth/reset-password:
+ *   post:
+ *     summary: Reset user password
+ *     tags:
+ *       - Authentication
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - forgotPasswordCode
+ *               - newPassword
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               forgotPasswordCode:
+ *                 type: string
+ *                 example: "123456"
+ *               newPassword:
+ *                 type: string
+ *                 example: NewPassword123
+ *
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *       400:
+ *         description: Invalid or expired password reset code
+ *       404:
+ *         description: User not found
+ *       429:
+ *         description: Too many authentication attempts
+ */
+
 // Reset user password
 router.post(
   "/reset-password",
@@ -132,6 +236,36 @@ router.post(
   resetPassword,
 );
 
+/**
+ * @swagger
+ * /api/auth/resend-verification-code:
+ *   post:
+ *     summary: Resend email verification code
+ *     tags:
+ *       - Authentication
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *
+ *     responses:
+ *       200:
+ *         description: Verification code resent successfully
+ *       400:
+ *         description: User is already verified
+ *       404:
+ *         description: User not found
+ */
+
 // Resend verification code
 router.post(
   "/resend-verification-code",
@@ -139,6 +273,19 @@ router.post(
   checkUserExists,
   resendVerificationCode,
 );
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     tags:
+ *       - Authentication
+ *
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ */
 
 // Logout
 router.post("/logout", logout);

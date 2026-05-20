@@ -6,7 +6,7 @@ const swaggerOptions = {
     openapi: "3.0.0",
 
     info: {
-      title: "node Auth API",
+      title: "Node Auth API",
       version: "1.0.0",
       description:
         "Authentication API built with Node.js, Express, MySQL, JWT, cookies, and protected routes.",
