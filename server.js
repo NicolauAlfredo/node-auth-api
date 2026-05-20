@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const { connectDB } = require("./src/config/db");
 const authRouter = require("./src/routes/authRouter");
 const postRouter = require("./src/routes/postRouter");
+const errorHandler = require("./src/middlewares/errorHandler");
 
 const app = express();
 
@@ -47,14 +48,7 @@ app.get("/", (req, res) => {
 });
 
 // Global error handler middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-
-  res.status(500).json({
-    success: false,
-    message: "Internal Server Error",
-  });
-});
+app.use(errorHandler);
 
 // Start application after database connection
 const startServer = async () => {
