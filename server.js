@@ -12,6 +12,9 @@ const errorHandler = require("./src/middlewares/errorHandler");
 const userRouter = require("./src/routes/userRouter");
 const { globalLimiter } = require("./src/middlewares/rateLimiter");
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./src/docs/swagger");
+
 const app = express();
 
 // Limiter
@@ -39,6 +42,9 @@ app.use(express.json());
 
 // Parse URL-encoded form data
 app.use(express.urlencoded({ extended: true }));
+
+// Docs
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Authentication routes
 app.use("/api/auth", authRouter);
