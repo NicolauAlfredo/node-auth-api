@@ -57,12 +57,12 @@ const getPostByIdController = async (req, res, next) => {
         success: false,
         message: "Post not found",
       });
-
-      res.status(200).json({
-        success: true,
-        data: post,
-      });
     }
+
+    res.status(200).json({
+      success: true,
+      data: post,
+    });
   } catch (error) {
     next(error);
   }
