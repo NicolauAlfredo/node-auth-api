@@ -47,6 +47,13 @@ app.use("/api/posts", postRouter);
 // User routes
 app.use("/api/users", userRouter);
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "API is running",
+  });
+});
+
 // Global error handler middleware
 app.use(errorHandler);
 
