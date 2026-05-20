@@ -1,0 +1,36 @@
+services:
+  api:
+    build: .
+    container_name: node-auth-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm start
+
+  mysql:
+    image: mysql:8.0
+    container_name: node-auth-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: PapaiCode*-
+      MYSQL_DATABASE: node_auth_api
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./src/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pPapaiCode*-"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:
