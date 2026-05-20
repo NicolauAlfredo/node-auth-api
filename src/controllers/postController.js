@@ -7,8 +7,6 @@ const {
   deletePost,
 } = require("../models/postModel");
 
-const { post } = require("../routes/postRouter");
-
 // Create a new post
 const createPostController = async (req, res, next) => {
   try {
