@@ -2,6 +2,7 @@ const express = require("express");
 
 const authMiddleware = require("../middlewares/authMiddleware");
 const validator = require("../middlewares/validator");
+const checkPostOwnership = require("../middlewares/checkPostOwnership");
 
 const {
   createPostSchema,
@@ -12,7 +13,7 @@ const {
   createPostController,
   getAllPostsController,
   getPostByIdController,
-  getMyPostsControler,
+  getMyPostsController,
   updatePostController,
   deletePostController,
 } = require("../controllers/postController");
@@ -31,7 +32,7 @@ router.post(
 router.get("/", getAllPostsController);
 
 // Get authenticated user's posts - protected
-router.get("/me", authMiddleware, getMyPostsControler);
+router.get("/me", authMiddleware, getMyPostsController);
 
 // Get post by id - public
 router.get("/:id", getPostByIdController);
@@ -40,11 +41,12 @@ router.get("/:id", getPostByIdController);
 router.put(
   "/:id",
   authMiddleware,
+  checkPostOwnership,
   validator(updatePostSchema),
   updatePostController,
 );
 
 // Delete post - protected
-router.delete("/:id", authMiddleware, deletePostController);
+router.delete("/:id", authMiddleware, checkPostOwnership, deletePostController);
 
 module.exports = router;

@@ -69,7 +69,7 @@ const getPostByIdController = async (req, res, next) => {
 };
 
 // Get authenticated user's posts
-const getMyPostsControler = async (req, res, next) => {
+const getMyPostsController = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
@@ -89,23 +89,6 @@ const updatePostController = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, description } = req.body;
-    const userId = req.user.id;
-
-    const post = await findPostById(id);
-
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        message: "Post not found",
-      });
-    }
-
-    if (post.userId !== userId) {
-      return res.status(403).json({
-        success: false,
-        message: "You are not allowed to update this post",
-      });
-    }
 
     await updatePost({
       id,
@@ -126,23 +109,6 @@ const updatePostController = async (req, res, next) => {
 const deletePostController = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
-
-    const post = await findPostById(id);
-
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        message: "post not fond",
-      });
-    }
-
-    if (post.userId != userId) {
-      return res.status(403).json({
-        success: false,
-        message: "You are not allowed to delete this post",
-      });
-    }
 
     await deletePost(id);
 
@@ -159,7 +125,7 @@ module.exports = {
   createPostController,
   getAllPostsController,
   getPostByIdController,
-  getMyPostsControler,
+  getMyPostsController,
   updatePostController,
   deletePostController,
 };
