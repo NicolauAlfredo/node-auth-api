@@ -19,8 +19,8 @@ services:
     container_name: node-auth-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: PapaiCode*-
-      MYSQL_DATABASE: node_auth_api
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     ports:
       - "3307:3306"
     volumes:
