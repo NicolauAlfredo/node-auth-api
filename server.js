@@ -7,6 +7,7 @@ const { connectDB } = require("./src/config/db");
 const authRouter = require("./src/routes/authRouter");
 const postRouter = require("./src/routes/postRouter");
 const errorHandler = require("./src/middlewares/errorHandler");
+const userRouter = require("./src/routes/userRouter");
 
 const app = express();
 
@@ -38,6 +39,9 @@ app.use("/api/auth", authRouter);
 
 // Post routes
 app.use("/api/posts", postRouter);
+
+// User routes
+app.use("/api/users", userRouter);
 
 // Base route to test server status
 app.get("/", (req, res) => {
