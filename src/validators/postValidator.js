@@ -4,14 +4,14 @@ const Joi = require("joi");
 const createPostSchema = Joi.object({
   title: Joi.string().trim().min(3).max(255).required(),
 
-  descrition: Joi.string().trim().min(10).required(),
+  description: Joi.string().trim().min(10).required(),
 });
 
 // Update post validation schema
 const updatePostSchema = Joi.object({
   title: Joi.string().trim().min(3).max(255).required(),
 
-  descrition: Joi.string().trim().min(10).required(),
+  description: Joi.string().trim().min(10).required(),
 });
 
 module.exports = {
