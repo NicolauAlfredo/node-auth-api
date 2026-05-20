@@ -2,6 +2,7 @@ const express = require("express");
 
 const validator = require("../middlewares/validator");
 const checkUserExists = require("../middlewares/checkUserExists");
+const { authLimiter } = require("../middlewares/rateLimiter");
 
 const {
   registerSchema,
@@ -28,7 +29,13 @@ const router = express.Router();
 router.post("/register", validator(registerSchema), register);
 
 // Login user
-router.post("/login", validator(loginSchema), checkUserExists, login);
+router.post(
+  "/login",
+  authLimiter,
+  validator(loginSchema),
+  checkUserExists,
+  login,
+);
 
 // Verify user account
 router.post(
@@ -41,6 +48,7 @@ router.post(
 // Request password reset code
 router.post(
   "/forgot-password",
+  authLimiter,
   validator(forgotPasswordSchema),
   checkUserExists,
   forgotPassword,
@@ -49,6 +57,7 @@ router.post(
 // Reset user password
 router.post(
   "/reset-password",
+  authLimiter,
   validator(resetPasswordSchema),
   checkUserExists,
   resetPassword,

@@ -10,8 +10,12 @@ const authRouter = require("./src/routes/authRouter");
 const postRouter = require("./src/routes/postRouter");
 const errorHandler = require("./src/middlewares/errorHandler");
 const userRouter = require("./src/routes/userRouter");
+const { globalLimiter } = require("./src/middlewares/rateLimiter");
 
 const app = express();
+
+// Limiter
+app.use(globalLimiter);
 
 // Define application port
 const PORT = process.env.PORT || 8000;
